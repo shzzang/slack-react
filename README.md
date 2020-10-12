@@ -1,1 +1,1 @@
-# slack-react
+# React Study
