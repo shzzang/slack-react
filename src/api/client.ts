@@ -1,6 +1,7 @@
 import Axios, { AxiosInstance, AxiosResponse, CancelToken } from 'axios';
 
-const baseURL = 'http://localhost:8000';
+// const baseURL = 'http://localhost:8000';
+const baseURL = 'https://us-central1-demoapp-1779c.cloudfunctions.net/v1';
 
 const instance: AxiosInstance = Axios.create({
     baseURL,
@@ -15,7 +16,7 @@ export interface IMessage {
         name?: string;
         avatar?: string;
     };
-    data?: Date;
+    date?: Date;
 }
 
 export const fetchMessages = (
