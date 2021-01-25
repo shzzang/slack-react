@@ -1,9 +1,11 @@
 import * as React from 'react';
-import { Comment, Header } from 'semantic-ui-react';
+import { Comment, Dimmer, Header, Loader } from 'semantic-ui-react';
 import { fetchMessages, IMessage } from '../api/client';
 
 interface IMessageFeedProps {
     channelName: string;
+    shouldReload: boolean;
+    setShouldReload: (shouldReload: boolean) => void;
 }
 
 export function MessageFeed(props: IMessageFeedProps) {
@@ -15,19 +17,44 @@ export function MessageFeed(props: IMessageFeedProps) {
         props.channelName
     );
 
+    const [isLoading, setLoading] = React.useState(false);
+
     React.useEffect(() => {
         setChannelName(props.channelName);
     }, [props.channelName]);
 
     React.useEffect(() => {
+        setLoading(true);
+        getMessages();
+    }, [channelName]);
+
+    React.useEffect(() => {
+        if (props.shouldReload) {
+            getMessages();
+        }
+    }, [props.shouldReload]);
+
+    const getMessages = () => {
+        props.setShouldReload(false);
         fetchMessages(channelName)
             .then((response) => {
                 setMessages(response.data.messages);
             })
             .catch((err) => {
                 console.error(err);
+            })
+            .finally(() => {
+                setLoading(false);
             });
-    }, [channelName]);
+    };
+
+    if (isLoading) {
+        return (
+            <Dimmer active>
+                <Loader size="massive" />
+            </Dimmer>
+        );
+    }
 
     return (
         <Comment.Group>
